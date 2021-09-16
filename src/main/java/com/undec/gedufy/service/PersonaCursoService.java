@@ -36,10 +36,11 @@ public class PersonaCursoService {
         Response response = new Response();
         try {
             // TODO: obtener la lista completa de PersonaCurso
-
+            List<PersonaCurso> personaCursoList = personaCursoRepository.findAll();
             // TODO: castear la lista a PersonaCursoDTO
-
+            List<PersonaCursoDTO> personaCursoDTOList = new PersonaCursoDTO().getPersonaCursoDTOList(personaCursoList);
             // TODO: retornar lista PersonaCursoDTO en el response
+            response.setData(personaCursoDTOList);
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
@@ -78,21 +79,33 @@ public class PersonaCursoService {
         return response;
     }
 
-    public Response save(Object input) {
+    public Response save(PersonaCursoDTO input) throws Exception {
         Response response = new Response();
         try {
             // TODO: verificar que exista el curso (por id). Si no existe devolver status/message indicandolo en el response
+            Curso curso = cursoRepository.findById(input.getCursoDTO().getId()).get();
+            if(curso.getId()==null){
+                Exception e = new Exception();
+                response.setMessage("no se encuentra el curso ingresado");
+                throw e;
 
+            }
             // TODO: verificar que exista la persona (por email). Si no existe devolver status/message indicandolo en el response
+            Persona persona = personaRepository.findById(input.getPersonaDTO().getId()).get();
+            if(persona.getEmail()==null){
+                Exception e = new Exception();
+                response.setMessage("no se encuentra la persona ingresada");
+                throw e;
 
+            }
             // TODO: castear de PersonaCursoDTO a PersonaCurso
+            PersonaCurso personaCurso = new PersonaCursoDTO().getPersonaCurso(input,curso,persona);
 
             // TODO: save
-
+            personaCursoRepository.save(personaCurso);
             // TODO: en el response.data devolver el objeto guardado
-            
-
-        } catch (Exception e) {
+            response.setData(personaCurso);
+        }catch (Exception e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
             throw e;

@@ -14,6 +14,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 @ControllerAdvice(basePackages = "com.undec.gedufy.controller")
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -61,6 +62,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ExceptionHandler(NoSuchElementException.class)
+    protected ResponseEntity<Object> handleNoSuchException(Exception ex) {
+        Response response = new Response();
+        response.setStatus(789);
+        response.setMessage("no existe la persona o el curso ingresado" + " - " + ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleException(Exception ex) {
         Response response = new Response();
@@ -68,4 +76,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         response.setMessage(ex.getStackTrace()[0].getClassName() + " - " + ex.getStackTrace()[0].getMethodName() + " - " + ex.getClass() + " - " + ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+
+
 }

@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface PersonaRepository extends JpaRepository<Persona, Integer> {
     List<Persona> findAllByNombreContaining(String nombre);
+    Persona findAllByEmailContaining(String email);
 }
